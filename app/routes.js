@@ -1,5 +1,5 @@
 module.exports = (app) => {
-	const App = require("../controllers/app.controller.js");
+	const App = require("./controller.js");
 
 	app.get("/test", App.test);
 

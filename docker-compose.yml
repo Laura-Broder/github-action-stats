@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+    github-action-stats:
+        container_name: github-action-stats
+        image: github-action-stats
+        restart: always
+        build: .
+        ports:
+            - "5000:5000"
+        links:
+            - mongo
+    mongo:
+        container_name: mongo
+        image: mongo
+        volumes:
+            - /data:/data/db
+        ports:
+            - "27017:27017"

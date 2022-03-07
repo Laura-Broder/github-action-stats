@@ -1,5 +1,5 @@
-const { Repo, Run, Workflow } = require("../models/app.model.js");
-const { getOrgRepos, getWorkflowsByOrgAndRepo, getRunsByOrgRepoAndWorkflowId } = require("../clients/axiosClient");
+const { Repo, Run, Workflow } = require("./model.js");
+const { getOrgRepos, getWorkflowsByOrgAndRepo, getRunsByOrgRepoAndWorkflowId } = require("./axiosClient");
 
 // test
 exports.test = (req, res) => {
@@ -59,7 +59,7 @@ exports.refreshData = async (req, res) => {
 				}
 				console.log(`got ${runsByOrgRepoAndWorkflowIdRes.workflow_runs.length} workflow runs for workflow ${workflow.name} of repo ${repo.name} in organization ${org_name}`);
 				runsByOrgRepoAndWorkflowIdRes.workflow_runs.forEach(async (run) => {
-					const dbRun = await Run.findOne({ id: run.id });
+					const dbRun = await Run.findOne({ workflowRunId: run.id });
 					if (!dbRun) {
 						console.log(`adding run id ${run.id} to DB`);
 						const newDbRun = new Run({
@@ -77,7 +77,7 @@ exports.refreshData = async (req, res) => {
 							branch: run.head_branch,
 							commitSHA: run.head_sha
 						});
-						newDbRun.save();
+						await newDbRun.save();
 					} else {
 						console.log(`run id ${run.id} is already in db`);
 					}
